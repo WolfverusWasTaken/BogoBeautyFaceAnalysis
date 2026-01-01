@@ -97,6 +97,18 @@ BogoBeautyFaceAnalysis/
 
 ---
 
+## 🏗️ Architecture
+
+<div align="center">
+  <img src="assets/Architecture.png" alt="System Architecture" width="90%" />
+</div>
+
+<div align="center">
+  <img src="assets/Model Pipeline.png" alt="Model Pipeline" width="90%" />
+</div>
+
+---
+
 ## 🔧 How It Works
 
 ### 1. Frontend (React + TypeScript)
@@ -114,6 +126,9 @@ BogoBeautyFaceAnalysis/
 - **Feature Extraction:** CLIP ViT (Vision Transformer)
 - **Classifiers:** Random Forest (one per attribute)
 - **Training:** SMOTE for class balancing + GridSearchCV optimization
+
+> 🎓 **Want to train your own models?**  
+> Check the [`training_data/`](training_data/README.md) folder for the complete training pipeline, datasets, and Jupyter notebooks.
 
 ---
 
