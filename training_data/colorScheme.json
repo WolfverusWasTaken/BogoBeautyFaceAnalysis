@@ -1,0 +1,51 @@
+{
+  "foundation_colors": [
+    {"color": "Ivory", "hex": "#F6E1D3"},
+    {"color": "Porcelain", "hex": "#F2E2D2"},
+    {"color": "Light Beige", "hex": "#F0D2B6"},
+    {"color": "Medium Beige", "hex": "#C8A68B"},
+    {"color": "Honey", "hex": "#C2885E"},
+    {"color": "Caramel", "hex": "#C67E4C"},
+    {"color": "Mocha", "hex": "#3C2A2B"},
+    {"color": "Chestnut", "hex": "#4C2A2A"},
+    {"color": "Espresso", "hex": "#4E2C23"},
+    {"color": "Alabaster", "hex": "#F9F1E7"},
+    {"color": "Light Ivory", "hex": "#E1D6B9"},
+    {"color": "Warm Beige", "hex": "#D9B89A"}
+  ],
+  "eyeshadow_colors": [
+    {"color": "Soft Peach", "hex": "#F9D5A7"},
+    {"color": "Champagne", "hex": "#F1E0C6"},
+    {"color": "Rose Gold", "hex": "#B76E5E"},
+    {"color": "Pale Taupe", "hex": "#D3C4B9"},
+    {"color": "Copper", "hex": "#B87333"},
+    {"color": "Bronze", "hex": "#CD7F32"},
+    {"color": "Terracotta", "hex": "#E2725B"},
+    {"color": "Deep Plum", "hex": "#580F41"},
+    {"color": "Gold", "hex": "#FFD700"},
+    {"color": "Deep Brown", "hex": "#3E2B2A"},
+    {"color": "Emerald Green", "hex": "#50C878"},
+    {"color": "Soft Taupe", "hex": "#B8A99D"},
+    {"color": "Light Brown", "hex": "#C49A6C"},
+    {"color": "Champagne Gold", "hex": "#F1E0C6"},
+    {"color": "Pale Pink", "hex": "#FAD1D1"}
+  ],
+  "lipstick_colors": [
+    {"color": "Light Pink", "hex": "#F1C6D0"},
+    {"color": "Peachy Beige", "hex": "#F1D2A1"},
+    {"color": "Dusty Rose", "hex": "#C76D6B"},
+    {"color": "Coral Red", "hex": "#FF6F61"},
+    {"color": "Rose", "hex": "#E1A6A1"},
+    {"color": "Berry Pink", "hex": "#9B4169"},
+    {"color": "Mauve", "hex": "#9F7B9C"},
+    {"color": "Crimson Red", "hex": "#DC143C"},
+    {"color": "Burgundy", "hex": "#800020"},
+    {"color": "Wine Red", "hex": "#9B1B30"},
+    {"color": "Deep Plum", "hex": "#580F41"},
+    {"color": "Fuchsia", "hex": "#D1008F"},
+    {"color": "Soft Nude", "hex": "#F2D8B5"},
+    {"color": "Peach", "hex": "#FAD6A5"},
+    {"color": "Bubblegum Pink", "hex": "#F8A2D2"},
+    {"color": "Warm Red", "hex": "#F44336"}
+  ]
+}

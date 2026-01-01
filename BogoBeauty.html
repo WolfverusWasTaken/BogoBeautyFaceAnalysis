@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BogoBeauty Analyzer - Technical Documentation</title>
+  <meta name="description"
+    content="Technical documentation for the BogoBeauty Face Analyzer: architecture, ML pipeline, and API specifications." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card: #111317;
+      --text: #e8eaed;
+      --muted: #b9c0cc;
+      --accent: #8ab4f8;
+      --accent-pink: #f48fb1;
+      --border: #1f232b;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --space-2: 10px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 36px;
+      --maxw: 1100px;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #fafafa;
+        --card: #ffffff;
+        --text: #1a1f2b;
+        --muted: #5b6472;
+        --accent: #275df5;
+        --accent-pink: #c2185b;
+        --border: #e8e9ee;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg), color-mix(in oklab, var(--bg), #000 8%));
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-3);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: var(--space-4);
+      align-items: center;
+      padding: var(--space-4);
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+
+    h1 {
+      margin: 0 0 var(--space-2);
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: white;
+      margin-top: var(--space-2);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    .section {
+      padding: var(--space-4);
+    }
+
+    .section h2 {
+      font-size: 1.3rem;
+      margin: 0 0 var(--space-3);
+      color: var(--accent);
+    }
+
+    .section h3 {
+      font-size: 1rem;
+      margin: var(--space-3) 0 var(--space-2);
+      color: var(--text);
+    }
+
+    .hero-img,
+    .full-img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: block;
+      margin: var(--space-3) 0;
+    }
+
+    ul,
+    ol {
+      margin: var(--space-2) 0;
+      padding-left: 1.3em;
+    }
+
+    li {
+      margin: var(--space-2) 0;
+    }
+
+    code {
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: var(--border);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .tech-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+
+    .tech-card h4 {
+      margin: 0 0 var(--space-2);
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+
+    .tech-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: var(--space-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      margin: var(--space-3) 0;
+    }
+
+    .flow-step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    .byline {
+      text-align: center;
+      font-style: italic;
+      color: var(--muted);
+      padding: var(--space-3) 0;
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .logo {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <article class="card">
+      <!-- Header -->
+      <header class="header">
+        <img class="logo" src="assets/BB-Icon.jpg" alt="BogoBeauty Logo" />
+        <div>
+          <h1>BogoBeauty Face Analyzer</h1>
+          <p class="lead">Technical Documentation</p>
+          <span class="badge" style="background: linear-gradient(135deg, #C0C0C0, #E8E8E8); color: #333;">🥈 2nd Place
+            Winner</span>
+          <span class="badge">Summer Micro Design Challenge 2025</span>
+        </div>
+      </header>
+
+      <hr />
+      <p class="byline">Alexi George — Hannam University • Singapore Institute of Technology • Rega Technical University
+      </p>
+      <hr />
+
+      <!-- System Overview -->
+      <section class="section">
+        <h2>System Overview</h2>
+        <p>
+          The BogoBeauty Face Analyzer is a full-stack web application that analyzes facial features
+          in real-time using machine learning, and provides personalized makeup product recommendations.
+        </p>
+
+        <div class="flow-diagram">
+          <div class="flow-step">Camera Capture</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">CLIP ViT Embedding</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">RF Classifiers</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Product Matching</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Recommendations</div>
+        </div>
+
+        <img class="full-img" src="assets/Architecture.png" alt="System Architecture" />
+      </section>
+
+      <!-- Technology Stack -->
+      <section class="section">
+        <h2>Technology Stack</h2>
+        <div class="grid-2">
+          <div class="tech-card">
+            <h4>Frontend</h4>
+            <p>React 18, TypeScript, Tailwind CSS, Vite</p>
+          </div>
+          <div class="tech-card">
+            <h4>Backend</h4>
+            <p>FastAPI, Uvicorn, Python 3.8+</p>
+          </div>
+          <div class="tech-card">
+            <h4>ML Models</h4>
+            <p>CLIP ViT-B/32, Random Forest Classifiers</p>
+          </div>
+          <div class="tech-card">
+            <h4>Face Analysis</h4>
+            <p>MediaPipe Face Mesh (468 landmarks)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ML Pipeline -->
+      <section class="section">
+        <h2>Machine Learning Pipeline</h2>
+
+        <img class="full-img" src="assets/Model Pipeline.png" alt="Model Pipeline" />
+
+        <h3>1. Feature Extraction</h3>
+        <p>
+          Facial images are processed using <strong>CLIP ViT (Vision Transformer)</strong>
+          from OpenAI. The model (<code>openai/clip-vit-base-patch32</code>) produces 512-dimensional
+          embeddings that capture semantic facial features.
+        </p>
+
+        <h3>2. Classification Tasks</h3>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Labels</th>
+          </tr>
+          <tr>
+            <td>Skin Tone</td>
+            <td>fair, light, medium, dark</td>
+          </tr>
+          <tr>
+            <td>Hair Color</td>
+            <td>black, blonde, brown, dark, dark brown, gray, light brown, red</td>
+          </tr>
+          <tr>
+            <td>Eye Color</td>
+            <td>blue, brown, dark, dark brown, gray, green</td>
+          </tr>
+          <tr>
+            <td>Eyebrow Color</td>
+            <td>black, blonde, brown, dark, dark brown, gray</td>
+          </tr>
+        </table>
+
+        <h3>3. Training Process</h3>
+        <ol>
+          <li><strong>Data Collection:</strong> CelebA dataset with manually labeled attributes</li>
+          <li><strong>Feature Extraction:</strong> CLIP embeddings stored in <code>.npz</code> format</li>
+          <li><strong>Class Balancing:</strong> SMOTE (Synthetic Minority Oversampling Technique)</li>
+          <li><strong>Model Training:</strong> Random Forest Classifier per attribute</li>
+          <li><strong>Hyperparameter Tuning:</strong> GridSearchCV for optimal parameters</li>
+          <li><strong>Evaluation:</strong> Accuracy . F1-score on held-out test set</li>
+        </ol>
+      </section>
+
+      <!-- API Specification -->
+      <section class="section">
+        <h2>API Specification</h2>
+
+        <h3>POST /predict</h3>
+        <p>Analyzes a facial image and returns detected attributes with product recommendations.</p>
+
+        <h4>Request</h4>
+        <pre>Content-Type: multipart/form-data
+Field: file (image/jpeg or image/png)</pre>
+
+        <h4>Response</h4>
+        <pre>{
+  "skin_tone": "medium",
+  "hair_color": "dark brown",
+  "eyebrow_color": "brown",
+  "recommended_foundation": "[{...}]",  // JSON string
+  "recommended_lipstick": "[{...}]"     // JSON string
+}</pre>
+
+        <h4>Product Recommendation Object</h4>
+        <pre>{
+  "Brand Name": "Fenty Beauty",
+  "Product Name": "Pro Filt'r Soft Matte Foundation",
+  "Price": 40.00,
+  "Ratings": 4.8
+}</pre>
+      </section>
+
+      <!-- Frontend Architecture -->
+      <section class="section">
+        <h2>Frontend Architecture</h2>
+
+        <h3>Component Structure</h3>
+        <table>
+          <tr>
+            <th>Component</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td><code>App.tsx</code></td>
+            <td>Root component, state management, API calls</td>
+          </tr>
+          <tr>
+            <td><code>Camera.tsx</code></td>
+            <td>WebRTC camera access, frame capture</td>
+          </tr>
+          <tr>
+            <td><code>Results.tsx</code></td>
+            <td>Feature display, product cards</td>
+          </tr>
+          <tr>
+            <td><code>Header.tsx</code></td>
+            <td>Branding, responsive navigation</td>
+          </tr>
+        </table>
+
+        <h3>Key Features</h3>
+        <ul>
+          <li><strong>HTTPS:</strong> Required for camera access on non-localhost</li>
+          <li><strong>Responsive:</strong> Tabbed navigation on mobile, side-by-side on desktop</li>
+          <li><strong>Dark Theme:</strong> Automatic, respects system preferences</li>
+          <li><strong>API Proxy:</strong> Vite proxies <code>/api</code> to backend</li>
+        </ul>
+      </section>
+
+      <!-- MediaPipe Integration -->
+      <section class="section">
+        <h2>MediaPipe Integration</h2>
+        <p>
+          The <code>recommender_helper.py</code> module uses MediaPipe Face Mesh to:
+        </p>
+        <ul>
+          <li>Detect 468 facial landmarks</li>
+          <li>Create masks for face regions (excluding eyes)</li>
+          <li>Extract mean skin color from masked regions</li>
+          <li>Extract mean lip color for lipstick matching</li>
+          <li>Apply virtual makeup overlays (optional feature)</li>
+        </ul>
+
+        <h3>Landmark Regions</h3>
+        <table>
+          <tr>
+            <th>Region</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td>FACE</td>
+            <td>Skin tone extraction, foundation matching</td>
+          </tr>
+          <tr>
+            <td>LIP_UPPER / LIP_LOWER</td>
+            <td>Lip color extraction, lipstick matching</td>
+          </tr>
+          <tr>
+            <td>LEFT_EYE / RIGHT_EYE</td>
+            <td>Excluded from face mask</td>
+          </tr>
+          <tr>
+            <td>EYEBROW_LEFT / RIGHT</td>
+            <td>Eyebrow color detection</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- Deployment -->
+      <section class="section">
+        <h2>Deployment & Access</h2>
+
+        <h3>Local Development</h3>
+        <pre>python recognition_Service.py  # Backend on :8000
+cd frontend && npm run dev      # Frontend on :3000</pre>
+
+        <h3>Network Access</h3>
+        <ul>
+          <li>Both servers bind to <code>0.0.0.0</code> for network access</li>
+          <li>HTTPS enabled via self-signed certificate (required for camera)</li>
+          <li>Windows Firewall must allow ports 3000 and 8000</li>
+        </ul>
+
+        <h3>Production Considerations</h3>
+        <ul>
+          <li>Use proper SSL certificates (Let's Encrypt)</li>
+          <li>Deploy frontend as static build (<code>npm run build</code>)</li>
+          <li>Use Gunicorn/Nginx for production backend</li>
+          <li>Consider GPU acceleration for CLIP inference</li>
+        </ul>
+      </section>
+
+      <!-- File Reference -->
+      <section class="section">
+        <h2>File Reference</h2>
+        <table>
+          <tr>
+            <th>File</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><code>recognition_Service.py</code></td>
+            <td>FastAPI backend with /predict endpoint</td>
+          </tr>
+          <tr>
+            <td><code>recommender_helper.py</code></td>
+            <td>MediaPipe utilities, color extraction, makeup overlay</td>
+          </tr>
+          <tr>
+            <td><code>models/*.pkl</code></td>
+            <td>Trained Random Forest classifiers (joblib format)</td>
+          </tr>
+          <tr>
+            <td><code>Make-Up Recommendation.xlsx</code></td>
+            <td>Product database (Foundation & Lipstick sheets)</td>
+          </tr>
+          <tr>
+            <td><code>frontend/src/*</code></td>
+            <td>React TypeScript components</td>
+          </tr>
+        </table>
+      </section>
+
+    </article>
+  </main>
+</body>
+
+</html>
